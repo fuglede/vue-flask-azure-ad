@@ -7,7 +7,11 @@ from pathlib import Path
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(
+    app,
+    origins = ["http://localhost:8080"],
+    supports_credentials = True,  # does not appear to be needed?
+)
 
 
 dotenv.load_dotenv(Path(__file__).parent / '../app/.env.local')
@@ -19,27 +23,21 @@ auth = FlaskAzureOauth()
 auth.init_app(app)
 
 
-def cors(response):
-    response.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
-    response.headers.add("Access-Control-Allow-Credentials", "true")
-    return response
-
-
 @app.route("/unprotected")
 def unprotected():
-    return cors(jsonify({"success": True}))
+    return jsonify({"success": True})
 
 
 @app.route("/protected")
 @auth()
 def protected():
-    return cors(jsonify({"success": True}))
+    return jsonify({"success": True})
 
 
 @app.route("/protected-with-role")
 @auth("Write.All")
 def protected_with_scope():
-    return cors(jsonify({"success": True}))
+    return jsonify({"success": True})
 
 
 app.run(debug=True)
