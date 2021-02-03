@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 from flask_cors import CORS
 from flask_azure_oauth import FlaskAzureOauth
 import dotenv
@@ -7,11 +7,7 @@ from pathlib import Path
 
 
 app = Flask(__name__)
-CORS(
-    app,
-    origins = ["http://localhost:8080"],
-    supports_credentials = True,  # does not appear to be needed?
-)
+CORS(app, origins = ["http://localhost:8080"])
 
 
 dotenv.load_dotenv(Path(__file__).parent / '../app/.env.local')
@@ -25,19 +21,19 @@ auth.init_app(app)
 
 @app.route("/unprotected")
 def unprotected():
-    return jsonify({"success": True})
+    return {"success": True}
 
 
 @app.route("/protected")
 @auth()
 def protected():
-    return jsonify({"success": True})
+    return {"success": True}
 
 
 @app.route("/protected-with-role")
 @auth("Write.All")
 def protected_with_scope():
-    return jsonify({"success": True})
+    return {"success": True}
 
 
 app.run(debug=True)
