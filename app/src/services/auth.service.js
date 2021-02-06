@@ -4,8 +4,8 @@ export default class AuthService {
   constructor() {
     this.applicationConfig = {
       auth: {
-        clientId: '{Application (client) ID for frontend app registration}',
-        authority: "https://login.microsoftonline.com/{Directory (tenant) ID}"
+        clientId: process.env.VUE_APP_AZURE_OAUTH_FRONTEND_APPLICATION_ID,
+        authority: "https://login.microsoftonline.com/"+process.env.VUE_APP_AZURE_OAUTH_TENANCY,
       },
       cache: {
         cacheLocation: "localStorage",
@@ -13,7 +13,8 @@ export default class AuthService {
       }
     };
     this.requestObj = {
-      scopes: ['api://{Application (client) ID for backend app registration}/Read.All']
+      scopes: ['api://'+process.env.VUE_APP_AZURE_OAUTH_BACKEND_APPLICATION_ID+'/Read.All']
+
     }
     this.app = new Msal.UserAgentApplication(this.applicationConfig);
   }
